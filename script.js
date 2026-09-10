@@ -192,14 +192,46 @@ const projectDetails = {
       "กำหนดการทำงานของสื่อโต้ตอบ รวมถึงเปิดลิงก์นิทานอีสปภายนอกและแสดงตัวอย่างวิดีโอเพลงสำหรับเด็ก"
     ],
     "artifacts": null
-  }
+  },
+
+  "SqlSchool": {
+    "title": "SQL SCHOOL — ระบบบริหารจัดการข้อมูลสารสนเทศโรงเรียน",
+    "category": "การออกแบบฐานข้อมูล และ การวิเคราะห์ระบบ",
+    "subtitle": "การออกแบบโครงสร้างฐานข้อมูลเชิงสัมพันธ์ แผนผัง ER-Diagram และพจนานุกรมข้อมูล (Data Dictionary)",
+    "badges": [
+      "SQL / Relational Database",
+      "การออกแบบ ER-Diagram",
+      "Data Dictionary",
+      "การวิเคราะห์ระบบ (System Analysis)",
+      "Database Key Design",
+      "การออกแบบ UI ต้นแบบ"
+    ],
+    "github": "https://drive.google.com/drive/folders/1CNIQl8XJpxjqkTIm0yqO7au7VIpHAsWg?usp=drive_link",
+    "demo": "#",
+    "summary": "SQL SCHOOL เป็นการออกแบบระบบฐานข้อมูลเชิงสัมพันธ์เพื่อรองรับการทำงานของโรงเรียน โดยแบ่งกลุ่มผู้ใช้งานออกเป็น นักเรียน ครู และผู้ดูแลระบบ (Admin) ครอบคลุมตั้งแต่การสมัครเรียน ตารางเรียน-ตารางสอน จนถึงการประมวลผลการเรียนและออกรายงานอย่างเป็นระบบ",
+    "keyContributions": [
+      "วิเคราะห์ความต้องการและกำหนดขอบเขตหน้าที่ของผู้ใช้งาน 3 กลุ่ม ได้แก่ นักเรียน ครูผู้สอน และผู้ดูแลระบบ (Admin)",
+      "ออกแบบแผนภาพความสัมพันธ์ของข้อมูล (ER-Diagram) และ Entity หลัก 8 ตาราง พร้อมจำแนกความสัมพันธ์แบบ 1:1, 1:N และ M:N",
+      "กำหนด Composite Primary Key และ Foreign Key เพื่อเชื่อมโยงความสัมพันธ์และป้องกันการบันทึกข้อมูลซ้ำซ้อนในระบบ",
+      "จัดทำพจนานุกรมข้อมูล (Data Dictionary) กำหนด Data Type, ความยาว และ Constraints (Not Null) ตามมาตรฐาน RDBMS"
+    ],
+    "artifacts": null
+  },
 };
+
+// Aliases for SqlSchool key
+projectDetails['sql-school'] = projectDetails['SqlSchool'];
+projectDetails['sqlschool'] = projectDetails['SqlSchool'];
 
 // Global Open & Close Handlers (Exposed on window object)
 window.openProjectModal = function (projectId) {
   const projectModal = document.getElementById('project-modal');
-  const data = projectDetails[projectId];
-  if (!data || !projectModal) return;
+  if (!projectId || !projectModal) return;
+
+  const normalizedKey = (projectId || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const foundKey = Object.keys(projectDetails).find(k => k.toLowerCase().replace(/[^a-z0-9]/g, '') === normalizedKey) || projectId;
+  const data = projectDetails[foundKey] || projectDetails[projectId];
+  if (!data) return;
 
   const titleEl = document.getElementById('modal-title');
   const catEl = document.getElementById('modal-category');
@@ -484,7 +516,11 @@ function initPortfolio() {
 
       projectCards.forEach(card => {
         const cat = card.getAttribute('data-category');
-        if (filter === 'all' || cat === filter) {
+        if (
+          filter === 'all' ||
+          cat === filter ||
+          (filter === 'database' && (cat === 'database' || cat === 'การออกแบบฐานข้อมูล'))
+        ) {
           card.style.display = 'flex';
         } else {
           card.style.display = 'none';
